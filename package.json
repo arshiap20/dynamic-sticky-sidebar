@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "description": "Jank-free two-way sticky sidebar that follows dynamic (hide/show) headers. Vanilla JS, React and Vue.",
   "license": "MIT",
+  "author": "arshia",
+  "homepage": "https://arshiap20.github.io/dynamic-sticky-sidebar/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arshiap20/dynamic-sticky-sidebar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arshiap20/dynamic-sticky-sidebar/issues"
+  },
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",

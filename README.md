@@ -3,6 +3,8 @@
 Two-way sticky sidebar that follows **dynamic headers** (hide-on-scroll navs, collapsing bars) without jumping.
 ~1.8 KB gzipped, zero dependencies, fully tree-shakeable, vanilla JS + React + Vue.
 
+**Docs and live demo:** https://arshiap20.github.io/dynamic-sticky-sidebar/
+
 - Sidebar taller than the viewport: scrolls with the page, then pins its **bottom** while you scroll down and its **top** (under the header) while you scroll up.
 - Sidebar shorter than the viewport: pins under the header and moves with it as the header slides in and out.
 - Works with headers animated by CSS transitions, CSS animations, Web Animations, or JS that writes inline styles every frame (motion / framer-motion, GSAP).
