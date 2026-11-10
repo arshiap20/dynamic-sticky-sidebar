@@ -1,0 +1,119 @@
+{
+  "name": "dynamic-sticky-sidebar",
+  "version": "0.1.0",
+  "description": "Jank-free two-way sticky sidebar that follows dynamic (hide/show) headers. Vanilla JS, React and Vue.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.global.js",
+  "jsdelivr": "./dist/index.global.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./vue": {
+      "import": {
+        "types": "./dist/vue.d.ts",
+        "default": "./dist/vue.js"
+      },
+      "require": {
+        "types": "./dist/vue.d.cts",
+        "default": "./dist/vue.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/react.d.ts"
+      ],
+      "vue": [
+        "./dist/vue.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "sticky",
+    "sidebar",
+    "sticky-sidebar",
+    "header",
+    "react",
+    "vue",
+    "scroll"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit && tsc -p test --noEmit",
+    "test": "vitest run && pnpm test:e2e",
+    "test:unit": "vitest run --project unit",
+    "test:watch": "vitest --project unit",
+    "test:package": "vitest run --project package",
+    "test:e2e": "pnpm build && playwright test",
+    "size": "pnpm build && node scripts/size.ts",
+    "demo": "pnpm build && open demo/index.html",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "prepublishOnly": "pnpm typecheck && pnpm test"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "vue": ">=3.3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@fontsource-variable/bricolage-grotesque": "5.3.0",
+    "@fontsource-variable/instrument-sans": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/vazirmatn": "5.3.0",
+    "@playwright/test": "1.65.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitest/browser-playwright": "5.1.0",
+    "@vuepress/bundler-vite": "2.0.0-rc.31",
+    "@vuepress/plugin-slimsearch": "2.0.0-rc.137",
+    "@vuepress/theme-default": "2.0.0-rc.137",
+    "esbuild": "0.28.2",
+    "playwright": "^1.65.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sass-embedded": "^1.108.1",
+    "tsup": "^9.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "5.1.0",
+    "vue": "^3.5.45",
+    "vuepress": "2.0.0-rc.31"
+  }
+}

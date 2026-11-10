@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dynamic-sticky-sidebar demo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          15px/1.5 system-ui,
+          sans-serif;
+        background: #f4f5f7;
+        color: #1d2433;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .bar {
+        position: relative;
+        z-index: 1;
+        height: 60px;
+        background: #fff;
+        border-bottom: 1px solid #e3e6ec;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 24px;
+      }
+      .bar b {
+        color: #3b5bdb;
+      }
+      .bar label {
+        font-size: 13px;
+        color: #667;
+      }
+      nav {
+        position: absolute;
+        inset-inline: 0;
+        top: 100%;
+        height: 50px;
+        background: #fff;
+        border-bottom: 1px solid #e3e6ec;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 0 24px;
+      }
+      .css nav {
+        transition: transform 0.25s ease-out;
+      }
+      nav.hidden {
+        transform: translateY(-100%);
+      }
+      .nav-space {
+        height: 50px;
+      }
+      .layout {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: 290px 1fr;
+        gap: 32px;
+        align-items: start;
+      }
+      aside {
+        background: #fff;
+        border: 1px solid #e3e6ec;
+        border-radius: 16px;
+        padding: 16px;
+      }
+      aside .item {
+        height: 44px;
+        border-radius: 10px;
+        background: #eef1f6;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-size: 13px;
+      }
+      aside .item:first-child {
+        background: #3b5bdb;
+        color: #fff;
+      }
+      aside .item:last-child {
+        background: #e8590c;
+        color: #fff;
+        margin: 0;
+      }
+      main .card {
+        height: 220px;
+        background: #fff;
+        border: 1px solid #e3e6ec;
+        border-radius: 16px;
+        margin-bottom: 24px;
+      }
+      footer {
+        height: 400px;
+        background: #1d2433;
+        color: #fff;
+        display: grid;
+        place-items: center;
+      }
+      #hud {
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        z-index: 60;
+        background: #1d2433;
+        color: #fff;
+        font:
+          12px/1.4 ui-monospace,
+          monospace;
+        padding: 8px 10px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="bar" id="bar">
+        <b>Demo</b>
+        <label><input type="checkbox" id="tall" checked /> tall sidebar</label>
+        <label
+          ><input type="checkbox" id="jsAnim" /> JS-driven header
+          animation</label
+        >
+      </div>
+      <nav id="nav">
+        <span>Categories</span><span>Brands</span><span>Deals</span
+        ><span>Blog</span>
+      </nav>
+    </header>
+    <div class="nav-space"></div>
+
+    <div class="layout">
+      <aside id="sidebar"></aside>
+      <main id="main"></main>
+    </div>
+    <footer>footer</footer>
+    <div id="hud"></div>
+
+    <script src="../dist/index.global.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const sidebar = document.getElementById("sidebar");
+      const nav = document.getElementById("nav");
+      const tall = document.getElementById("tall");
+      const jsAnim = document.getElementById("jsAnim");
+      if (params.get("sidebar") === "short") tall.checked = false;
+      if (params.get("anim") === "js") jsAnim.checked = true;
+      if (params.get("layout") === "block") {
+        const col = document.createElement("div");
+        sidebar.replaceWith(col);
+        col.append(sidebar);
+        col.style.alignSelf = "stretch";
+      }
+
+      const fill = () => {
+        const n = tall.checked ? 30 : 6;
+        sidebar.innerHTML = Array.from(
+          { length: n },
+          (_, i) =>
+            `<div class="item">Filter ${i + 1}${i === n - 1 ? " (last)" : ""}</div>`,
+        ).join("");
+      };
+      fill();
+      tall.onchange = fill;
+      document.getElementById("main").innerHTML = Array.from(
+        { length: 40 },
+        () => '<div class="card"></div>',
+      ).join("");
+
+      let hidden = false,
+        collapse = 0,
+        anim = 0;
+      const setHidden = (h) => {
+        if (h === hidden) return;
+        hidden = h;
+        document.body.classList.toggle("css", !jsAnim.checked);
+        if (!jsAnim.checked) return nav.classList.toggle("hidden", h);
+        cancelAnimationFrame(anim);
+        const from = collapse,
+          to = h ? 1 : 0,
+          t0 = performance.now();
+        const step = (now) => {
+          const p = Math.min(1, (now - t0) / 250);
+          collapse = from + (to - from) * (1 - (1 - p) ** 2);
+          nav.style.transform = `translateY(${-collapse * 100}%)`;
+          if (p < 1) anim = requestAnimationFrame(step);
+        };
+        anim = requestAnimationFrame(step);
+      };
+      let last = scrollY,
+        frame = 0;
+      addEventListener(
+        "scroll",
+        () => {
+          frame ||= requestAnimationFrame(() => {
+            frame = 0;
+            const y = scrollY,
+              d = y - last;
+            if (y < 200) {
+              setHidden(false);
+              last = y;
+            } else if (d > 8) {
+              setHidden(true);
+              last = y;
+            } else if (d < -4) {
+              setHidden(false);
+              last = y;
+            }
+          });
+        },
+        { passive: true },
+      );
+
+      window.sticky = StickySidebar.stickySidebar(sidebar, {
+        header: "#bar, #nav",
+        gap: 16,
+        media: "(min-width: 768px)",
+      });
+
+      const hud = document.getElementById("hud");
+      const loop = () => {
+        const r = sidebar.getBoundingClientRect();
+        hud.textContent = `top ${r.top.toFixed(1)}  bottom ${(innerHeight - r.bottom).toFixed(1)}  css-top ${sidebar.style.top} bottom ${sidebar.style.bottom} mt ${sidebar.style.marginTop || "-"}`;
+        requestAnimationFrame(loop);
+      };
+      if (!params.has("test")) loop();
+    </script>
+  </body>
+</html>

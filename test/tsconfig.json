@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["node", "@vitest/browser-playwright"]
+  },
+  "include": ["unit", "e2e", "package", "../scripts", "../vitest.config.ts", "../playwright.config.ts"]
+}
